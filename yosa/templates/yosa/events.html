@@ -1,0 +1,69 @@
+{% extends 'yosa/base.html' %}
+
+{% block title %}Events{% endblock %}
+
+{% block content %}
+<h1>Upcoming Events</h1>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <p>Browse and register for upcoming parties and events</p>
+    <a href="{% url 'past_events' %}" class="btn btn-outline-teal">View Past Events</a>
+</div>
+
+{% if events %}
+    <div class="event-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 2rem;">
+        {% for event in events %}
+            <div class="card">
+                {% if event.image %}
+                    <img src="{{ event.image.url }}" alt="{{ event.title }}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px 8px 0 0; margin-bottom: 1rem;">
+                {% else %}
+                    <div style="width: 100%; height: 200px; background: linear-gradient(135deg, var(--teal-light), var(--teal)); border-radius: 8px 8px 0 0; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; color: white;">
+                        <span style="font-size: 2rem; font-weight: bold;">{{ event.title|first|upper }}</span>
+                    </div>
+                {% endif %}
+                
+                <h3>{{ event.title }}</h3>
+                
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin: 0.5rem 0;">
+                    <span style="color: var(--teal); font-weight: bold;">{{ event.get_event_type_display }}</span>
+                    <span style="color: #666;">•</span>
+                    <span style="color: #666;">{{ event.date|date:"F j, Y" }}</span>
+                </div>
+                
+                <p>{{ event.description|truncatewords:30 }}</p>
+                
+                <div style="margin: 1rem 0;">
+                    <p><strong>📍 Location:</strong> {{ event.location }}</p>
+                    <p><strong>👥 Seats:</strong> {{ event.current_attendees }} / {{ event.max_attendees }} registered</p>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem;">
+                    <a href="{% url 'event_detail' event.id %}" class="btn btn-teal">View Details</a>
+                    
+                    {% if event.seats_left > 0 %}
+                        <a href="{% url 'register_event' event.id %}" class="btn btn-outline-teal">Register Now</a>
+                    {% else %}
+                        <span style="color: #dc3545; font-weight: bold;">Event Full</span>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="card" style="text-align: center; padding: 3rem;">
+        <h3>No Upcoming Events</h3>
+        <p>There are no events scheduled at the moment.</p>
+        <p>Check back later or contact the admin for updates.</p>
+    </div>
+{% endif %}
+
+<div class="card" style="margin-top: 2rem;">
+    <h3>Event Categories</h3>
+    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem;">
+        <span style="padding: 0.5rem 1rem; background-color: var(--teal-light); color: white; border-radius: 20px;">Party</span>
+        <span style="padding: 0.5rem 1rem; background-color: #20b2aa; color: white; border-radius: 20px;">Meetup</span>
+        <span style="padding: 0.5rem 1rem; background-color: #008080; color: white; border-radius: 20px;">Game Night</span>
+        <span style="padding: 0.5rem 1rem; background-color: var(--teal); color: white; border-radius: 20px;">Other</span>
+    </div>
+</div>
+{% endblock %}

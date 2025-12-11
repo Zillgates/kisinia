@@ -1,0 +1,16 @@
+{% extends 'yosa/base.html' %}
+
+{% block title %}Logged Out{% endblock %}
+
+{% block content %}
+<div class="card" style="text-align: center; max-width: 500px; margin: 4rem auto; padding: 3rem;">
+    <div style="font-size: 4rem; color: var(--teal); margin-bottom: 1rem;">👋</div>
+    <h2>Successfully Logged Out</h2>
+    <p>You have been logged out of your account.</p>
+    
+    <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+        <a href="{% url 'login' %}" class="btn btn-teal">Login Again</a>
+        <a href="{% url 'home' %}" class="btn btn-outline-teal">Go to Homepage</a>
+    </div>
+</div>
+{% endblock %}

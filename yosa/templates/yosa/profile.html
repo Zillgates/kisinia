@@ -1,0 +1,119 @@
+{% extends 'yosa/base.html' %}
+
+{% block title %}My Profile - {{ user.username }}{% endblock %}
+
+{% block content %}
+<div class="profile-header">
+
+    {# ---- Avatar Section ---- #}
+    {% if user.avatar %}
+        <img src="{{ user.avatar.url }}" alt="{{ user.username }}" class="avatar">
+    {% else %}
+        <div class="avatar default-avatar">
+            {{ user.username|slice:":1"|upper }}
+        </div>
+    {% endif %}
+
+    <h1>{{ user.get_full_name|default:user.username }}</h1>
+    <p>@{{ user.username }}</p>
+</div>
+
+
+
+
+<div class="dashboard-grid">
+
+    {# ---- Profile Info ---- #}
+    <div class="card">
+        <h3>Profile Information</h3>
+        <div class="profile-info">
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <p><strong>Phone:</strong> {{ user.phone|default:"Not provided" }}</p>
+            <p><strong>Member Since:</strong> {{ user.date_joined|date:"F j, Y" }}</p>
+            <p><strong>Last Login:</strong> {{ user.last_login|date:"F j, Y, g:i A" }}</p>
+        </div>
+
+        <div class="button-row">
+            <a href="{% url 'update_profile' %}" class="btn btn-teal">Edit Profile</a>
+        </div>
+    </div>
+
+
+
+    {# ---- Bio ---- #}
+    <div class="card">
+        <h3>Bio</h3>
+        {% if user.bio %}
+            <p>{{ user.bio|linebreaks }}</p>
+        {% else %}
+            <p class="text-muted">No bio added yet.</p>
+        {% endif %}
+    </div>
+
+
+
+    {# ---- Stats ---- #}
+    <div class="stat-card">
+        <h3>Total Events</h3>
+        <div class="stat-number">
+            {{ registrations_count|default:0 }}
+        </div>
+        <p>Registered events</p>
+    </div>
+
+
+
+    {# ---- Account Status ---- #}
+    <div class="card">
+        <h3>Account Status</h3>
+
+        <p>
+            <span class="status-dot {% if user.is_active %}active{% else %}inactive{% endif %}"></span>
+            Account is {% if user.is_active %}Active{% else %}Inactive{% endif %}
+        </p>
+
+        <p>
+            <span class="status-dot {% if user.is_verified %}active{% else %}pending{% endif %}"></span>
+            Verification: {% if user.is_verified %}Verified{% else %}Pending{% endif %}
+        </p>
+
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button class="btn btn-danger w-100" type="submit">Logout</button>
+        </form>
+    </div>
+
+</div>
+
+
+
+
+{# ---- Recent Activity ---- #}
+<div class="card mt-4">
+    <h3>Recent Activity</h3>
+
+    <div class="event-list">
+        {% if recent_registrations %}
+            {% for registration in recent_registrations %}
+                <div class="event-card">
+                    <h4>{{ registration.event.title }}</h4>
+                    <p><strong>Registered on:</strong> {{ registration.registration_date|date:"M j, Y" }}</p>
+
+                    <p><strong>Status:</strong>
+                        <span class="status-badge 
+                            {% if registration.status == 'confirmed' %} confirmed
+                            {% elif registration.status == 'pending' %} pending
+                            {% else %} cancelled
+                            {% endif %}">
+                            {{ registration.status|title }}
+                        </span>
+                    </p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-muted">No recent activity to show.</p>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

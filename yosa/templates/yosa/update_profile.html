@@ -1,0 +1,70 @@
+{% extends 'yosa/base.html' %}
+
+{% block title %}Update Profile{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 600px; margin: 0 auto;">
+    <h2 style="text-align: center; color: var(--teal); margin-bottom: 2rem;">Update Your Profile</h2>
+    
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div style="text-align: center; margin-bottom: 2rem;">
+            {% if user.avatar %}
+                <img src="{{ user.avatar.url }}" alt="Current Avatar" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--teal);">
+            {% endif %}
+        </div>
+        
+        {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                
+                {% if field.help_text %}
+                    <small style="color: #6c757d; display: block; margin-top: 0.25rem;">{{ field.help_text }}</small>
+                {% endif %}
+                
+                {% if field.errors %}
+                    <div style="color: #dc3545; font-size: 0.875rem; margin-top: 0.25rem;">
+                        {% for error in field.errors %}
+                            <div>{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+        
+        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+            <button type="submit" class="btn btn-teal" style="flex: 1;">Update Profile</button>
+            <a href="{% url 'profile' %}" class="btn btn-outline-teal" style="flex: 1;">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<style>
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 1rem;
+        margin-top: 0.25rem;
+    }
+    
+    .form-control:focus {
+        outline: none;
+        border-color: var(--teal);
+        box-shadow: 0 0 0 2px rgba(0,128,128,0.2);
+    }
+    
+    textarea.form-control {
+        min-height: 100px;
+        resize: vertical;
+    }
+    
+    input[type="file"].form-control {
+        padding: 0.5rem;
+        background-color: #f8f9fa;
+    }
+</style>
+{% endblock %}

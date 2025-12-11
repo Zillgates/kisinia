@@ -1,0 +1,57 @@
+{% extends 'yosa/base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h1>Welcome, {{ user.username }}!</h1>
+
+<div class="dashboard-grid">
+    <div class="stat-card">
+        <h3>Friends Registered</h3>
+        <div class="stat-number">{{ friends_count }}</div>
+        <p>Attending upcoming events</p>
+    </div>
+    
+    <div class="card">
+        <h3>Your Upcoming Events</h3>
+        <div class="event-list">
+            {% for registration in upcoming_registrations %}
+                <div class="event-card">
+                    <h4>{{ registration.event.title }}</h4>
+                    <p>{{ registration.event.date|date:"F j, Y - g:i A" }}</p>
+                    <a href="{% url 'event_detail' registration.event.id %}" class="btn btn-teal">View Details</a>
+                </div>
+            {% empty %}
+                <p>You haven't registered for any upcoming events.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem;">
+    <div class="card">
+        <h3>Trending Events</h3>
+        <div class="event-list">
+            {% for event in trending_events %}
+                <div class="event-card">
+                    <h4>{{ event.title }}</h4>
+                    <p>{{ event.description|truncatewords:20 }}</p>
+                    <a href="{% url 'event_detail' event.id %}" class="btn btn-outline-teal">Join</a>
+                </div>
+            {% empty %}
+                <p>No trending events at the moment.</p>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="card">
+        <h3>Quick Actions</h3>
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <a href="{% url 'events' %}" class="btn btn-teal">Browse Events</a>
+            <a href="{% url 'send_feedback' %}" class="btn btn-outline-teal">Send Feedback</a>
+            <a href="{% url 'update_profile' %}" class="btn btn-outline-teal">Update Profile</a>
+            <a href="{% url 'past_events' %}" class="btn btn-outline-teal">View Past Events</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

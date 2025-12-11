@@ -1,0 +1,18 @@
+{% extends 'yosa/base.html' %}
+
+{% block title %}Cancel Registration{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Cancel Registration</h2>
+    <p>Are you sure you want to cancel your registration for <strong>{{ event.title }}</strong>?</p>
+    
+    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+        <form method="post" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn" style="background-color: #dc3545; color: white;">Yes, Cancel Registration</button>
+        </form>
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-teal">No, Go Back</a>
+    </div>
+</div>
+{% endblock %}
